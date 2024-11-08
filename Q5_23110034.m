@@ -1,85 +1,77 @@
-% Q5_23110034.m
-% Define the time vector (range: -10 to 10 seconds)
-time_interval= -10:0.01:10;
+% Q5_23110034
+% Matlab code for Q5
 
-% Define the ramp function
-ramp_function=@(t) t .* (t >= 0); % Ramp function for t >= 0
+syms t w
+ramp_signal=t*heaviside(t);  % Define the ramp function r(t)
 
-% Define x(t)
-signal_x=ramp_function(time_interval+1)-2*ramp_function(time_interval)+ramp_function(time_interval-1);
+% Define x(t)=r(t+1)-2*r(t)+r(t-1)
+x_function=subs(ramp_signal,t,t+1)-2 * +ramp_signal +subs(ramp_signal, t, t-1);
 
-% Differentiate x(t) to obtain y(t)
-signal_y=gradient(signal_x,time_interval(2)-time_interval(1)); % Numerical differentiation
+% Fourier Transform of x(t)
+X_w_transform=fourier(x_function, w);
 
-% Compute the FFT of x(t) and y(t)
-fft_signal_x=fftshift(fft(signal_x));
-fft_signal_y=fftshift(fft(signal_y));
+% Derivative of x(t) to obtain y(t)
+y_function = diff(x_function, t);
 
-% Define frequency in radians and convert to Hertz
-frequency_radians=linspace(-pi,pi,length(time_interval)); % Frequency in radians
-frequency_hz=frequency_radians/(2*pi*(time_interval(2)-time_interval(1))); % Convert to Hertz
+% Fourier Transform of y(t)
+Y_w_transform = fourier(y_function, w);
 
-% Plot x(t) and y(t) in the time domain with different color schemes
+% Display Fourier transforms of X(w) and Y(w)
+disp('X(w) = ');
+disp(X_w_transform);
+disp('Y(w) = ');
+disp(Y_w_transform);
+
+% Compute magnitude and phase of X(w) and Y(w)
+magnitude_X = abs(X_w_transform);
+phase_X = angle(X_w_transform);
+magnitude_Y = abs(Y_w_transform);
+phase_Y = angle(Y_w_transform);
+
+% Plot Magnitude and Phase Spectrum for X(w)
 figure;
 subplot(2,1,1);
-plot(time_interval, signal_x, 'm'); % Use magenta for x(t)
-title('Signal x(t)');
-xlabel('Time (seconds)');
-ylabel('Amplitude of x(t)');
+fplot(magnitude_X, [-50 50]); % Magnitude plot for X(w)
+title('Magnitude Spectrum of X(w)');
+xlabel('Frequency (rad/s)');
+ylabel('|X(w)|');
 grid on;
 
 subplot(2,1,2);
-plot(time_interval,signal_y,'g'); % Use green for y(t)
-title('Signal y(t)');
-xlabel('Time (seconds)');
-ylabel('Amplitude of y(t)');
+fplot(phase_X, [-50 50]); % Phase plot for X(w)
+title('Phase Spectrum of X(w)');
+xlabel('Frequency (rad/s)');
+ylabel('Phase of X(w)');
 grid on;
 
-% Plot magnitude and phase spectra of fft_signal_x with updated color
+% Plot Magnitude and Phase Spectrum for Y(w)
 figure;
 subplot(2,1,1);
-plot(frequency_hz, abs(fft_signal_x), 'b'); % Blue for magnitude
-title('Magnitude Spectrum |X(f)|');
-xlabel('Frequency (Hz)');
-ylabel('Magnitude of X(f)');
+fplot(magnitude_Y, [-50 50]); % Magnitude plot for Y(w)
+title('Magnitude Spectrum of Y(w)');
+xlabel('Frequency (rad/s)');
+ylabel('|Y(w)|');
 grid on;
 
 subplot(2,1,2);
-plot(frequency_hz, angle(fft_signal_x), 'r'); % Red for phase
-title('Phase Spectrum ∠X(f)');
-xlabel('Frequency (Hz)');
-ylabel('Phase (radians)');
+fplot(phase_Y, [-50 50]); % Phase plot for Y(w)
+title('Phase Spectrum of Y(w)');
+xlabel('Frequency (rad/s)');
+ylabel('Phase of Y(w)');
 grid on;
 
-% Plot magnitude and phase spectra of fft_signal_y with updated color
+% Plot 20*log10 magnitude for smoother analysis
 figure;
 subplot(2,1,1);
-plot(frequency_hz, abs(fft_signal_y), 'c'); % Cyan for magnitude of y(t)
-title('Magnitude Spectrum |Y(f)|');
-xlabel('Frequency(Hz)');
-ylabel('Magnitude of Y(f)');
+fplot(20*log10(magnitude_X), [-50 50]); % Logarithmic magnitude plot for X(w)
+title('20*log10|X(w)|');
+xlabel('Frequency (rad/s)');
+ylabel('Magnitude (dB)');
 grid on;
 
 subplot(2,1,2);
-plot(frequency_hz, angle(fft_signal_y), 'k'); % Blue for phase of y(t)
-title('Phase Spectrum ∠Y(f)');
-xlabel('Frequency (Hz)');
-ylabel('Phase (radians)');
+fplot(20*log10(magnitude_Y), [-50 50]); % Logarithmic magnitude plot for Y(w)
+title('20*log10|Y(w)|');
+xlabel('Frequency (rad/s)');
+ylabel('Magnitude (dB)');
 grid on;
-
-% Plot 20*log10|fft_signal_x| in a separate figure with changed colors
-figure;
-plot(frequency_hz, 20*log10(abs(fft_signal_x)), 'm'); % Magenta for log magnitude
-title('Log Magnitude Spectrum 20*log10|X(f)|');
-xlabel('Frequency (Hz)');
-ylabel('20*log10|X(f)|');
-grid on;
-
-% Plot 20*log10|fft_signal_y| in a separate figure with different color
-figure;
-plot(frequency_hz, 20*log10(abs(fft_signal_y)), 'g'); % Green for log magnitude
-title('Log Magnitude Spectrum 20*log10|Y(f)|');
-xlabel('Frequency (Hz)');
-ylabel('20*log10|Y(f)|');
-grid on;
-
