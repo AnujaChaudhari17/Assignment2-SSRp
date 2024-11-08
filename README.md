@@ -11,4 +11,15 @@ In the zip folder "Q1_23110034.m" contains the matlab file for question 1.
 #Question 2
 In the zip folder "Q2_23110034.m" contains the matlab file forr Q2.
 
-#Ques
+#Question 3
+In the zip folder "Q3_23110034.m" contains the matlab file forr Q3.
+
+#Question 4
+In the zip folder "Q4_23110034.m" contains the matlab file forr Q4.
+
+#Question 5
+In the zip folder "Q5_23110034.m" contains the matlab file forr Q5.
+
+#Report:
+In the zip folder "Report_23110034.docx" contains the plots and explanation for the code of each question.
+
